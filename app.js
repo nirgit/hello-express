@@ -1,5 +1,5 @@
 var express = require('express');
-var routes = require('./appRoutes');
+var routes = require('./server/appRoutes');
 
 var app = express();
 routes.initRoutes(app);

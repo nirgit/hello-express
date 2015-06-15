@@ -13,7 +13,7 @@ function initRoutes(app) {
 		res.send("POST not supported... sorry dude..");
 	});
 
-	app.use(express.static('static'));
+	app.use(express.static('server/static'));
 
 	app.use(function(req, res) {
 		//console.log(req, req.toString());
