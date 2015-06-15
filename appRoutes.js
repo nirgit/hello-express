@@ -15,6 +15,12 @@ function initRoutes(app) {
 
 	app.use(express.static('static'));
 
+	app.use(function(req, res) {
+		//console.log(req, req.toString());
+		// one could also send a file here - a custom 404 page...
+		res.send('404 - Sorry "' + req.path + '" wasn\'t found.');
+	});
+
 	console.log("App Routes initialized!");
 }
 
