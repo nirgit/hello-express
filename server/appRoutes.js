@@ -13,6 +13,7 @@ function initRoutes(app) {
 		res.send("POST not supported... sorry dude..");
 	});
 
+	app.use(express.static('node_modules'));
 	app.use(express.static('server/static'));
 
 	app.use(function(req, res) {
