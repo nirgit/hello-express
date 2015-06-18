@@ -1,16 +1,37 @@
 'use strict';
 
 var express = require('express');
+var bodyParser = require('body-parser')
+var Firebase = require("firebase");
+
+var myFirebaseRef = new Firebase("https://hxrfh6ss6ym.firebaseio-demo.com/tweets");
 
 function initRoutes(app) {
+
+	// parse application/json
+	app.use(bodyParser.urlencoded({
+    	extended: true
+	}));
+	app.use(bodyParser.json());
 
 	// app.METHOD(PATH, HANDLER)
 	app.get('/', function (req, res) {
 	  res.sendFile(__dirname + "/static/pages/home.html");
 	});
 
+	app.get('/tweets', function(req, res) {
+		myFirebaseRef.once("value", function(data) {
+  			res.send(data.val());
+		});
+	});
+
+	app.post('/posts', function(req, res) {
+		// console.log('REQUEST /posts: ', req.body);
+		res.json({status: "OK"});
+	});
+
 	app.post('/', function(req, res) {
-		res.send("POST not supported... sorry dude..");
+		res.send("POST not supported... sorry dude...");
 	});
 
 	app.use(express.static('node_modules'));

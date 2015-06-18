@@ -17,8 +17,34 @@
 		<img src="/imgs/goat1.jpg" style="width:300px" />
 	</p>
 
+	<input id='tweet' type='text'/><button onclick='sendTweet()'>tweet!</button>
+	<div id='tweetStatus'></div>
+
 	<div id="app"></div>
 
 	<script src="requirejs/require.js" data-main="/client/app.js"></script>
+
+	<script>
+		function tweetedSuccessfully(data) {
+			if (data.status === 'OK') {
+				$('#tweetStatus').text('tweeted successfully');
+			} else {
+				$('#tweetStatus').text('error tweeting');
+			}
+		}
+
+		function sendTweet() {
+			var tweet = $('#tweet').val();
+			$('#tweet').val('');
+			var tweetData = { "tweet": tweet };
+			var call = $.ajax('/posts', {
+				type: 'POST',
+				data: tweetData,
+				dataType: 'json',
+				success: tweetedSuccessfully
+			}).done(tweetedSuccessfully);
+		}
+
+	</script>
 </body>
 </html>
