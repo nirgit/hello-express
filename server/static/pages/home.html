@@ -1,50 +1,113 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-	<meta charset="utf-8">
-	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>Home - Powered by Express</title>
-	<link rel="stylesheet" href="">
-	<script src="jquery/dist/jquery.min.js"></script>
-	<script src="react/dist/react-with-addons.min.js"></script>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Tweeting goats</title>
+    <link rel="stylesheet" href="">
+    <script src="jquery/dist/jquery.min.js"></script>
+    <script src="react/dist/react-with-addons.min.js"></script>
+    <style>
+    html {}
+    
+    body {
+        position: fixed;
+        width: 100%;
+        height: 100%;
+    }
+    
+    .bg {
+        background-image: url('/imgs/goat1.jpg');
+        background-size: cover;
+        width: 100%;
+        height: 100%;
+        position: fixed;
+        opacity: 0.2;
+        top: 0;
+        left: 0;
+    }
+
+    #content {
+    	position: absolute;
+    	width: 100%;
+        height: 100%;
+    }
+
+    #tweets {
+    	width: 300px;
+    	min-height: 400px;
+    	position: absolute;
+    	right: 20px;
+    	top: 10px;
+    	background: wheat;
+    	border: 2px solid green;
+    }
+    </style>
 </head>
+
 <body>
+    <div class="bg"></div>
+    <div id="content">
+        <div style='text-align: center;'>
+            <h1>Tweeting Goats!!!</h1>
+        </div>
+        <div>
+            <p>
+                <pre>Goat!</pre>
+                <img src="/imgs/goat1.jpg" style="width:300px" />
+            </p>
+        </div>
+        <input id='tweet' type='text' /><button onclick='sendTweet()'>tweet!</button>
+        <div id='tweetStatus'></div>
+		<div id="tweets">
+			<div>Last tweets</div>
+			<hr/>
+			<ul id='tweetList'>
+				
+			</ul>
+		</div>
 
-	<h1>Hello Express!</h1>
-	
-	<p>
-		<pre>Goat!</pre>
-		<img src="/imgs/goat1.jpg" style="width:300px" />
-	</p>
+        <div id="app"></div>
+        
 
-	<input id='tweet' type='text'/><button onclick='sendTweet()'>tweet!</button>
-	<div id='tweetStatus'></div>
+        <script src="requirejs/require.js" data-main="/client/app.js"></script>
+        <script>
+        function tweetedSuccessfully(data) {
+            if (data.status === 'OK') {
+                $('#tweetList').empty();
+                getTweets();
+            } else {
+                $('#tweetStatus').text('error tweeting');
+            }
+        }
 
-	<div id="app"></div>
+        function getTweets() {
+        	$.get('/tweets', function(data) {
+        		for (var i in data) {
+        			var li = document.createElement('li');
+        			li.innerText = data[i];
+        			$('#tweetList').append(li);
+        		}
+        	});
+        }
 
-	<script src="requirejs/require.js" data-main="/client/app.js"></script>
+        function sendTweet() {
+            var tweet = $('#tweet').val();
+            $('#tweet').val('');
+            var tweetData = {
+                "tweet": tweet
+            };
+            var call = $.ajax('/posts', {
+                type: 'POST',
+                data: tweetData,
+                dataType: 'json'
+            }).done(tweetedSuccessfully);
+        }
 
-	<script>
-		function tweetedSuccessfully(data) {
-			if (data.status === 'OK') {
-				$('#tweetStatus').text('tweeted successfully');
-			} else {
-				$('#tweetStatus').text('error tweeting');
-			}
-		}
-
-		function sendTweet() {
-			var tweet = $('#tweet').val();
-			$('#tweet').val('');
-			var tweetData = { "tweet": tweet };
-			var call = $.ajax('/posts', {
-				type: 'POST',
-				data: tweetData,
-				dataType: 'json',
-				success: tweetedSuccessfully
-			}).done(tweetedSuccessfully);
-		}
-
-	</script>
+        getTweets();
+        </script>
+    </div>
 </body>
+
 </html>
