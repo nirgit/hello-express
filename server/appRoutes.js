@@ -1,10 +1,9 @@
 'use strict';
 
 var express = require('express');
-var bodyParser = require('body-parser')
-var Firebase = require("firebase");
-
-var myFirebaseRef = new Firebase("https://hxrfh6ss6ym.firebaseio-demo.com/tweets");
+var bodyParser = require('body-parser');
+var Firebase = require('firebase');
+var resources = require('./urlResources').routes;
 
 function initRoutes(app) {
 
@@ -20,6 +19,8 @@ function initRoutes(app) {
 	});
 
 	app.get('/tweets', function(req, res) {
+		console.log('establishing conn to: ', resources.TWEETS);
+		var myFirebaseRef = new Firebase(resources.TWEETS);
 		myFirebaseRef.once("value", function(data) {
   			res.send(data.val());
 		});
@@ -27,6 +28,9 @@ function initRoutes(app) {
 
 	app.post('/posts', function(req, res) {
 		// console.log('REQUEST /posts: ', req.body);
+		console.log('establishing conn to: ', resources.TWEETS);
+		var myFirebaseRef = new Firebase(resources.TWEETS);
+		myFirebaseRef.push(req.body.tweet);
 		res.json({status: "OK"});
 	});
 
